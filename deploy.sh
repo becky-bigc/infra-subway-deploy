@@ -9,7 +9,7 @@ txtpur='\033[1;35m' # Purple
 txtgrn='\033[1;32m' # Green
 txtgra='\033[1;30m' # Gray
 
-PID=0
+PID=""
 BRANCH=$1
 PROFILE=$2
 BUILD_FILE=subway-0.0.1-SNAPSHOT.jar
@@ -39,8 +39,8 @@ function find_pid() {
 
 ## 프로세스를 종료하는 명령어
 function kill_pid() {
-  echo -e ""
-  if [[ $PID == 0 ]]; then
+  echo -e "pid : $PID"
+  if [[ -z $PID ]]; then
     echo "${txtred}isn't running process${txtrst}"
   else
     echo -e "${txtpur}>> kill process $pid ${txtrst}"
@@ -53,6 +53,7 @@ function deploy() {
   echo -e "${txtpur}>> deploy ${txtrst}"
   echo -e "$( find ./* -name "*subway*jar")"
   nohup java -jar -Dspring.profiles.active=${PROFILE} $( find ./* -name ${BUILD_FILE}) >1 subway.log 2>&1  &
+  echo -e "${txtpur}>> deploy ${txtrst}"
 }
 
 function check_df() {
@@ -67,6 +68,7 @@ function check_df() {
 }
 
 function start() {
+  check_df;
   pull;
   gradle_build;
   find_pid;
